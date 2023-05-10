@@ -1,0 +1,44 @@
+# Configuration
+/config/parameters.yml
+#/config/config.yml
+/config/config.json
+
+# Composer
+/.htaccess
+/vendor/
+
+# Contao Manager
+/contao-manager/
+
+# Generated CSS
+/**/scss/*.css
+
+# Generated folders
+/assets/
+/files/*
+/system/*
+!/system/config/
+/system/config/localconfig.php
+/system/config/tcpdf.php
+/var/
+/web/
+/app/Resources/contao/config
+
+# Skip files
+/system/modules/*/.skip
+
+#Custom
+/.idea
+.sass-cache
+!/files/tpl
+!/files/favicons
+!/web/mtiFontTrackingCode.js
+!/web/browserconfig.xml
+!/web/favicon.ico
+/export/*
+/isotope/
+
+# Env Files
+*.env*
+
+

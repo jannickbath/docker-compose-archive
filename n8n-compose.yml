@@ -1,0 +1,31 @@
+version: '3'
+services:
+    start:
+        image: n8nio/n8n
+        command: /bin/sh -c "n8n start --tunnel"
+        container_name: n8n
+        restart: "always"
+        ports:
+          - 5678
+        environment:
+            - DB_TYPE=mysqldb
+            - DB_MYSQLDB_DATABASE=n8n
+            - DB_MYSQLDB_HOST=mysql
+            - DB_MYSQLDB_PORT=3306
+            - DB_MYSQLDB_USER=root
+            - DB_MYSQLDB_PASSWORD=opwer384
+            - WEBHOOK_TUNNEL_URL=http://n8n.loc
+        volumes:
+            - ~/.n8n:/home/node/.n8n
+        networks:
+            - traefik_net
+            - db_network
+
+networks:
+  traefik_net:
+    external:
+      name: traefik_net
+  db_network:
+    external:
+      name: db_network
+        

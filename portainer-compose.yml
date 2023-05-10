@@ -1,0 +1,27 @@
+version: '3'
+services:
+    portainer:
+        image: 'portainer/portainer-ce:2.17.1'
+        restart: always
+        ports:
+            - '8000:8000'
+            - '9000:9000'
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock'
+            - '/var/lib/docker/volumes/portainer_data/_data:/data'
+            - '~/.ssh:/root/.ssh'
+        labels:
+            - 'traefik.enable=true'
+            - 'traefik.http.routers.portainer.entrypoints=web'
+            - 'traefik.http.routers.portainer.rule=Host(`portainer.loc`)'
+
+            - 'traefik.http.routers.portainerhttps.entrypoints=websecure'
+            - 'traefik.http.routers.portainerhttps.rule=Host(`portainer.loc`)'
+            - "traefik.http.routers.portainerhttps.tls.certresolver=myresolver"
+            - "traefik.http.services.portainerhttps.loadbalancer.server.port=9000"
+            - "traefik.http.routers.portainerhttps.middlewares=global-websocket"
+        networks:
+          - traefik_net
+networks:
+  traefik_net:
+    external: true
