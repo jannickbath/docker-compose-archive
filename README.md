@@ -24,3 +24,31 @@ This repository currently contains docker-compose files for the following servic
 - Traefik: A reverse proxy and load balancer that can be used to route incoming requests to the appropriate container.
 - Portainer: A web-based container management UI.
 - n8n: A workflow automation tool that allows you to create and manage workflows using a drag-and-drop interface.
+
+## For issues with mysql authentication method
+(https://stackoverflow.com/a/53905771)
+
+### **Check your .env**
+```
+MYSQL_VERSION=latest
+```
+### **Then type this command**
+
+```bash
+$ docker-compose exec mysql bash
+$ mysql -u root -p 
+```
+
+### **(login as root)**
+
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+ALTER USER 'default'@'%' IDENTIFIED WITH mysql_native_password BY 'secret';
+```
+
+Then go to phpmyadmin and login as :
+
+- **host** -> mysql
+- **user** -> root
+- **password** -> root
