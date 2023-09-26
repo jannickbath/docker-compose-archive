@@ -1,0 +1,43 @@
+version: '3'
+services:
+  pendora:
+    container_name: pendora
+    image: registry.gitlab.lupcom.de/contao-docker/contao-dev-container:latest-php8
+    restart: unless-stopped
+    environment:
+      - REPOSITORY=
+      - MAILER_PASSWORD=~
+      - MYSQL=mysql
+      - DB_USER=root
+      - DB_DATABASE=pendora
+      - DB_PASS=opwer384
+      - CONTAO_VERSION=4.9
+      - USE_SSL=0
+      - MAILER_USER=~
+      - NGINX_HOST=pendora.loc
+      - MAILER_PORT=25
+      - MAILER_TRANSPORT=sendmail
+      - MAILER_ENCRYPTION=~
+      - MAILER_HOST=127.0.0.1
+    volumes:
+      - /home/jannick/workspace/work/contao/pendora:/var/www/contao
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pendora.entrypoints=web"
+      - "traefik.http.routers.pendora.rule=Host(`pendora.loc`)"
+      - "traefik.http.routers.pendorahttps.entrypoints=websecure"
+      - "traefik.http.routers.pendorahttps.middlewares=global-websocket"
+      - "traefik.http.routers.pendorahttps.rule=Host(`pendora.loc`)"
+      - "traefik.http.routers.pendorahttps.tls.certresolver=myresolver"
+      - "traefik.http.services.pendorahttps.loadbalancer.server.port=8080"
+    ports:
+      - 8080
+    networks:
+      - db_network
+      - traefik_net
+
+networks:
+  traefik_net:
+    external: true
+  db_network:
+    external: true
