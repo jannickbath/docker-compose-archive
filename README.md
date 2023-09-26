@@ -52,3 +52,17 @@ Then go to phpmyadmin and login as :
 - **host** -> mysql
 - **user** -> root
 - **password** -> root
+
+## Portainer
+
+### Add Gitlab Registry
+
+- Provider: Custom
+
+- Name: `contao-docker/contao-dev-container`
+
+- Registry URL: `registry.gitlab.lupcom.de`
+
+- Authentication -> enabled
+    - Username: [yourUsername]
+    - Password: [personalAccessToken]
