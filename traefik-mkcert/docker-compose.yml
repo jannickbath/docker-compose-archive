@@ -1,0 +1,66 @@
+version: "3"
+services:
+  traefik:
+    image: "traefik:v2.9"
+    container_name: "traefik"
+    restart: "always"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik_net"
+      - "--providers.file.filename=/root/.config/ssl.toml"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+      - "--log.level=DEBUG"
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "./certs:/certs"
+      - ./traefik-ssl.toml:/root/.config/ssl.toml
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      # Comment out for automatic https redirection
+      - "traefik.enable=true"
+
+      # - "traefik.http.middlewares.traefik-https.redirectscheme.scheme=https"
+
+      - 'traefik.http.routers.traefikhttp.entrypoints=web'
+      - 'traefik.http.routers.traefikhttp.rule=Host(`traefik.loc`)'
+      # - "traefik.http.routers.traefikhttp.middlewares=traefik-https"
+      
+      - "traefik.http.routers.traefik.rule=Host(`traefik.loc`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      
+    networks:
+      - traefik_net
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+
+      # - "traefik.http.middlewares.whoami-https.redirectscheme.scheme=https"
+
+      - 'traefik.http.routers.whoamihttp.entrypoints=web'
+      - 'traefik.http.routers.whoamihttp.rule=Host(`whoami.loc`)'
+      # - "traefik.http.routers.whoamihttp.middlewares=whoami-https"
+
+      - "traefik.http.routers.whoami.rule=Host(`whoami.loc`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+
+    networks:
+      - traefik_net
+
+networks:
+  traefik_net:
+    external: true
+
+
